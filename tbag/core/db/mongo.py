@@ -13,19 +13,19 @@ import motor
 from bson.objectid import ObjectId
 from urllib.parse import quote_plus
 
+from tbag.utils import tools
 from tbag.utils import log as logger
-from tbag.utils.tools import DatetimeTool
 
 
 MONGO_CONN = None
 DELETE_FLAG = 'delete'  # True 已经删除，False 或者没有该字段表示没有删除
 
 
-def initMongodb(host='127.0.0.1', port=27017, dbuser='', dbpass=''):
+def initMongodb(host='127.0.0.1', port=27017, dbuser='', dbpass='', dbname='admin'):
     """ 初始化mongodb连接
     """
     if dbuser and dbpass:
-        uri = "mongodb://%s:%s@%s:%s" % (quote_plus(dbuser), quote_plus(dbpass), host, port)
+        uri = "mongodb://%s:%s@%s:%s/%s" % (quote_plus(dbuser), quote_plus(dbpass), host, port, dbname)
     else:
         uri = "mongodb://%s:%s" % (host, port)
     mongo_client = motor.motor_tornado.MotorClient(uri)
@@ -94,7 +94,7 @@ class DBBase(object):
         docs = copy.deepcopy(docs_data)
         ret_ids = []
         is_one = False
-        create_time = DatetimeTool.get_utc_time()
+        create_time = tools.get_utc_time()
         if not isinstance(docs, list):
             docs = [docs]
             is_one = True
@@ -121,7 +121,7 @@ class DBBase(object):
         if '_id' in spec:
             spec['_id'] = ObjectId(spec['_id'])
         set_fields = update_fields.get('$set', {})
-        set_fields['modify_time'] = DatetimeTool.get_utc_time()
+        set_fields['modify_time'] = tools.get_utc_time()
         update_fields['$set'] = set_fields
         if not multi:
             result = await self.dao.update_one(spec, update_fields, upsert=upsert)
