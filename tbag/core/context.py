@@ -92,9 +92,8 @@ class TornadoContext(object):
     def do_hearbeat(self):
         """ 服务器心跳
         """
-        from tbag.core.heart_beat import HeartBeat
-        hb = HeartBeat()
-        IOLoop.current().call_later(2, hb.start)
+        from tbag.core.heart_beat import heart_beat
+        IOLoop.current().call_later(2, heart_beat.start)
 
 
 TContext = TornadoContext()
