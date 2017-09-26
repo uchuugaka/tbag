@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='tbag',
-    version='1.0.4',
+    version='1.0.5',
 
     packages=['tbag',
               'tbag.core',
@@ -13,7 +13,7 @@ setup(
               'tbag.utils.error',
               ],
 
-    description='A tornado tools bag',
+    description='A Tornado tools bag.',
 
     url='https://github.com/Demon-Hunter/tbag',
 
@@ -21,5 +21,5 @@ setup(
     author_email='huangtao@klicen.com',
 
     license='MIT',
-    keywords=['tornado', 'tools'],
+    keywords=['Tornado', 'tools'],
 )
