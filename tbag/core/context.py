@@ -16,9 +16,9 @@ class TornadoContext(object):
     """ 全局系统变量、对象
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """ 初始化
-        @param configs 配置文件
+        @param kwargs 配置选项入参
             `run_mode`  运行模式，online为线上服务器，inner-test为内测测试服，test为测试服，console为本地调试
                         online/inner-test/test模式将会把日志写入日志文件，console模式不写日志文件而打印到控制台
             `log_level` 日志级别 DEBUG/INFO
@@ -29,7 +29,7 @@ class TornadoContext(object):
             `mysql_config`  mysql配置
             `mongo_config`  mongodb配置
         """
-        configs = options.configs
+        configs = kwargs
         src_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
         root_dir = os.path.dirname(src_dir)
         self.src_dir = src_dir
@@ -94,8 +94,3 @@ class TornadoContext(object):
         """
         from tbag.core.heart_beat import heart_beat
         IOLoop.current().call_later(2, heart_beat.start)
-
-
-TContext = TornadoContext()
-
-__all__ = [TContext]
