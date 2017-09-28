@@ -57,6 +57,7 @@ class TornadoContext(object):
 
         self.init_logger()
         self.init_db_instance()
+        self.init_uri_routes()
         self.do_hearbeat()
 
     def init_logger(self):
