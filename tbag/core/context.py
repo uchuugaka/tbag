@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
-""" 系统全局变量、对象
+"""
+    初始化日志、uri路由、数据库连接，启动服务器心跳
 """
 
 import os
@@ -13,7 +14,7 @@ from tbag.utils import log as logger
 
 
 class TornadoContext(object):
-    """ 全局系统变量、对象
+    """ 初始化日志、uri路由、数据库连接，启动服务器心跳
     """
 
     def __init__(self, **kwargs):
@@ -55,12 +56,12 @@ class TornadoContext(object):
         # mongodb配置
         self.mongo_config = configs.get('mongo_config')
 
-        self.init_logger()
-        self.init_db_instance()
-        self.init_uri_routes()
-        self.do_hearbeat()
+        self._init_logger()
+        self._init_db_instance()
+        self._init_uri_routes()
+        self._do_hearbeat()
 
-    def init_logger(self):
+    def _init_logger(self):
         """ 初始化日志
         """
         if self.run_mode == 'console':
@@ -70,7 +71,7 @@ class TornadoContext(object):
             logger.initLogger(self.log_level, self.log_path, logfile)
         options.parse_command_line()
 
-    def init_uri_routes(self):
+    def _init_uri_routes(self):
         """ 初始化uri路由
         """
         logger.info('init uri routes start >>>', caller=self)
@@ -78,7 +79,7 @@ class TornadoContext(object):
         self.handlers = handlers
         logger.info('init uri routes done <<<', caller=self)
 
-    def init_db_instance(self):
+    def _init_db_instance(self):
         """ 初始化数据库对象
         """
         logger.info('init db instance start >>>', caller=self)
@@ -90,7 +91,7 @@ class TornadoContext(object):
             initMongodb(**self.mongo_config)
         logger.info('init db instance done <<<', caller=self)
 
-    def do_hearbeat(self):
+    def _do_hearbeat(self):
         """ 服务器心跳
         """
         from tbag.core.heart_beat import heart_beat
