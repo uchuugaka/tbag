@@ -41,8 +41,8 @@ class TornadoContext(object):
 
         # 日志配置
         self.log_level = configs.get('log_level', 'DEBUG')
-        self.log_path = configs.get('log_level', '/tmp/logs')
-        self.log_name = configs.get('log_level', 'tbag.log')
+        self.log_path = configs.get('log_path', '/tmp/logs')
+        self.log_name = configs.get('log_name', 'tbag.log')
 
         # uri处理路径
         self.handler_pathes = configs.get('handler_pathes')
