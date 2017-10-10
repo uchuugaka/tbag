@@ -31,7 +31,7 @@ def initMongodb(host='127.0.0.1', port=27017, dbuser='', dbpass='', dbname='admi
     mongo_client = motor.motor_tornado.MotorClient(uri)
     global MONGO_CONN
     MONGO_CONN = mongo_client
-    logger.info('connect to mongodb success!')
+    logger.info('create mongodb connection pool.')
 
 
 class DBBase(object):

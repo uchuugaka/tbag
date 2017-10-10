@@ -84,7 +84,9 @@ class TornadoContext(object):
         """
         logger.info('init db instance start >>>', caller=self)
         if self.mysql_config:
-            pass
+            from tbag.core.db.mysql import initMySQL
+            logger.info('mysql config:', self.mysql_config, caller=self)
+            initMySQL(**self.mysql_config)
         if self.mongo_config:
             from tbag.core.db.mongo import initMongodb
             logger.info('mongodb config:', self.mongo_config, caller=self)
