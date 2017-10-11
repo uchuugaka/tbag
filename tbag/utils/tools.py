@@ -46,12 +46,15 @@ def get_date(fmt='%Y%m%d', delta_day=0):
     return str_d
 
 
-def date_str_to_dt(date_str, fmt='%Y%m%d'):
+def date_str_to_dt(date_str=None, fmt='%Y%m%d'):
     """ 日期字符串转换到datetime对象
     @param date_str 日期字符串
     @param fmt 日期字符串格式
     """
-    dt = datetime.datetime.strptime(date_str, fmt).date()
+    if not date_str:
+        dt = datetime.datetime.today().strftime(fmt)
+    else:
+        dt = datetime.datetime.strptime(date_str, fmt).date()
     return dt
 
 
