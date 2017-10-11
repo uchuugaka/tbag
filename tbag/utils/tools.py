@@ -50,6 +50,25 @@ def get_utc_time():
     return utc_t
 
 
+def ts_to_datetime_str(ts):
+    """ 将时间戳转换为日期时间格式，年-月-日 时:分:秒
+    @param ts 时间戳
+    """
+    if not ts:
+        return '00-00-00 00:00:00'
+    dt = datetime.datetime.fromtimestamp(int(ts))
+    return dt.strftime('%Y-%m-%d %H:%M:%S')
+
+
+def datetime_str_to_ts(dt_str, fmt='%Y-%m-%d %H:%M:%S'):
+    """ 将日期时间格式字符串转换成时间戳
+    @param dt_str 日期时间字符串
+    @param fmt 日期时间字符串格式
+    """
+    ts = int(time.mktime(datetime.datetime.strptime(dt_str, fmt).timetuple()))
+    return ts
+
+
 def get_uuid1():
     """ make a UUID based on the host ID and current time
     """
