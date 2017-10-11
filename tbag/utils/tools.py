@@ -35,12 +35,37 @@ def get_datetime():
     return str_dt
 
 
-def get_date(fmt='%Y%m%d'):
+def get_date(fmt='%Y%m%d', delta_day=0):
     """ 获取日期字符串，包含 年 + 月 + 日
     @param fmt 返回的日期格式
     """
-    today = datetime.datetime.today()
-    str_d = today.strftime(fmt)
+    day = datetime.datetime.today()
+    if delta_day:
+        day += datetime.timedelta(days=delta_day)
+    str_d = day.strftime(fmt)
+    return str_d
+
+
+def date_str_to_dt(date_str, fmt='%Y%m%d'):
+    """ 日期字符串转换到datetime对象
+    @param date_str 日期字符串
+    @param fmt 日期字符串格式
+    """
+    dt = datetime.datetime.strptime(date_str, fmt).date()
+    return dt
+
+
+def dt_to_date_str(dt=None, fmt='%Y%m%d', delta_day=0):
+    """ datetime对象转换到日期字符串
+    @param dt datetime对象
+    @param fmt 返回的日期字符串格式
+    @param delta_day 相对天数，<0减相对天数，>0加相对天数
+    """
+    if not dt:
+        dt = datetime.datetime.today()
+    if delta_day:
+        dt += datetime.timedelta(days=delta_day)
+    str_d = dt.strftime(fmt)
     return str_d
 
 
