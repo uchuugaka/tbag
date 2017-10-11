@@ -35,11 +35,12 @@ def get_datetime():
     return str_dt
 
 
-def get_date():
+def get_date(fmt='%Y%m%d'):
     """ 获取日期字符串，包含 年 + 月 + 日
+    @param fmt 返回的日期格式
     """
     today = datetime.datetime.today()
-    str_d = today.strftime('%Y%m%d')
+    str_d = today.strftime(fmt)
     return str_d
 
 
