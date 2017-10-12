@@ -1,17 +1,15 @@
 # -*- coding:utf-8 -*-
 
 from distutils.core import setup
+from setuptools import find_packages
+
 
 setup(
     name='tbag',
-    version='1.0.7',
+    version='1.0.9',
 
-    packages=['tbag',
-              'tbag.core',
-              'tbag.core.db',
-              'tbag.utils',
-              'tbag.utils.error',
-              ],
+    package_dir={'': 'tbag'},
+    packages=find_packages('tbag'),
 
     description='A Tornado tools bag.',
 
@@ -22,4 +20,10 @@ setup(
 
     license='MIT',
     keywords=['Tornado', 'tools'],
+
+    install_requires=[
+        'motor==1.1',
+        'tornado==4.5.2',
+        'Tornado-MySQL==0.5.1',
+    ],
 )
