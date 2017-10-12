@@ -46,15 +46,18 @@ def get_date(fmt='%Y%m%d', delta_day=0):
     return str_d
 
 
-def date_str_to_dt(date_str=None, fmt='%Y%m%d'):
+def date_str_to_dt(date_str=None, fmt='%Y%m%d', delta_day=0):
     """ 日期字符串转换到datetime对象
     @param date_str 日期字符串
     @param fmt 日期字符串格式
+    @param delta_day 相对天数，<0减相对天数，>0加相对天数
     """
     if not date_str:
-        dt = datetime.datetime.today().strftime(fmt)
+        dt = datetime.datetime.today()
     else:
         dt = datetime.datetime.strptime(date_str, fmt).date()
+    if delta_day:
+        dt += datetime.timedelta(days=delta_day)
     return dt
 
 
