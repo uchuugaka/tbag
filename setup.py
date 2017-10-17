@@ -1,15 +1,18 @@
 # -*- coding:utf-8 -*-
 
 from distutils.core import setup
-from setuptools import find_packages
 
 
 setup(
     name='tbag',
-    version='1.0.9',
+    version='1.1.0',
 
-    package_dir={'': 'tbag'},
-    packages=find_packages('tbag'),
+    packages=['tbag',
+              'tbag.core',
+              'tbag.core.db',
+              'tbag.utils',
+              'tbag.utils.error',
+              ],
 
     description='A Tornado tools bag.',
 
