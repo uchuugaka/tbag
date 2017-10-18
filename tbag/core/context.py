@@ -43,6 +43,7 @@ class TornadoContext(object):
         self.log_level = configs.get('log_level', 'DEBUG')
         self.log_path = configs.get('log_path', '/tmp/logs')
         self.log_name = configs.get('log_name', 'tbag.log')
+        self.log_filename = None
 
         # uri处理路径
         self.handler_pathes = configs.get('handler_pathes')
@@ -57,9 +58,10 @@ class TornadoContext(object):
         self.mongo_config = configs.get('mongo_config')
 
         self._init_logger()
+        self._print_configures()
         self._init_db_instance()
         self._init_uri_routes()
-        self._do_hearbeat()
+        self._do_heartbeat()
 
     def _init_logger(self):
         """ 初始化日志
@@ -67,9 +69,23 @@ class TornadoContext(object):
         if self.run_mode == 'console':
             logger.initLogger()
         else:
-            logfile = '%s_%s.log' % (self.log_name.split('.')[0], self.http_port)
-            logger.initLogger(self.log_level, self.log_path, logfile)
+            log_filename = '%s_%s.log' % (self.log_name.split('.')[0], self.http_port)
+            self.log_filename = log_filename
+            logger.initLogger(self.log_level, self.log_path, log_filename)
         options.parse_command_line()
+
+    def _print_configures(self):
+        """ 打印配置
+        """
+        logger.info('RUN MODE:', self.run_mode, caller=self)
+        logger.info('log_level:', self.log_level, 'log_path:', self.log_path, 'log_filename:', self.log_filename,
+                    caller=self)
+        logger.info('handler_pathes:', self.handler_pathes, caller=self)
+        logger.info('listen http_port:', self.http_port, caller=self)
+        if self.mysql_config:
+            logger.info('mysql_config:', self.mysql_config, caller=self)
+        if self.mongo_config:
+            logger.info('mongo_config:', self.mongo_config, caller=self)
 
     def _init_uri_routes(self):
         """ 初始化uri路由
@@ -93,7 +109,7 @@ class TornadoContext(object):
             initMongodb(**self.mongo_config)
         logger.info('init db instance done <<<', caller=self)
 
-    def _do_hearbeat(self):
+    def _do_heartbeat(self):
         """ 服务器心跳
         """
         from tbag.core.heart_beat import heart_beat
