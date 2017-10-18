@@ -32,6 +32,7 @@ class HeartBeat(object):
             func = task['func']
             args = task['args']
             kwargs = task['kwargs']
+            kwargs['heart_beat_count'] = self._count
             IOLoop.current().add_callback(func, *args, **kwargs)
 
     def register(self, func, *args, **kwargs):
