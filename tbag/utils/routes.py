@@ -29,6 +29,8 @@ class route(object):
         @param name 注册的uri别名
         """
         self.uri = uri
+        if not name:
+            name = '-'.join(uri.split('/'))
         self.name = name
 
     def __call__(self, _handler):
