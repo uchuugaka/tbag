@@ -5,6 +5,10 @@ mongodb async操作接口
 
 Author: huangtao
 Date:   2017/05/08
+Update:
+        2017/07/24  1、增加 find_one_and_update 接口;
+                    2、增加 find_one_and_delete 接口;
+        2017/08/16  1、增加数据库连接鉴权;
 """
 
 import copy
@@ -165,6 +169,41 @@ class DBBase(object):
         if '_id' in spec:
             spec['_id'] = ObjectId(spec['_id'])
         result = await self.dao.distinct(key, spec)
+        return result
+
+    async def find_one_and_update(self, spec, update_fields, upsert=False, return_document=False, fields=None):
+        """ 查询一条指定数据，并修改这条数据
+        @param spec 查询条件
+        @param update_fields 更新字段
+        @param upsert 如果不满足条件，是否插入新数据，默认False
+        @param return_document 返回修改之前数据或修改之后数据，默认False为修改之前数据
+        @param fields 需要返回的字段，默认None为返回全部数据
+        @return result 修改之前或之后的数据
+        """
+        spec[DELETE_FLAG] = {'$ne': True}
+        if '_id' in spec:
+            spec['_id'] = ObjectId(spec['_id'])
+        set_fields = update_fields.get('$set', {})
+        set_fields['modify_time'] = tools.get_utc_time()
+        update_fields['$set'] = set_fields
+        result = await self.dao.find_one_and_update(spec, update_fields, projection=fields, upsert=upsert,
+                                                    return_document=return_document)
+        if result and '_id' in result:
+            result['_id'] = str(result['_id'])
+        return result
+
+    async def find_one_and_delete(self, spec={}, fields=None):
+        """ 查询一条指定数据，并删除这条数据
+        @param spec 删除条件
+        @param fields 需要返回的字段，默认None为返回全部数据
+        @param result 删除之前的数据
+        """
+        spec[DELETE_FLAG] = {'$ne': True}
+        if '_id' in spec:
+            spec['_id'] = ObjectId(spec['_id'])
+        result = await self.dao.find_one_and_delete(spec, projection=fields)
+        if result and '_id' in result:
+            result['_id'] = str(result['_id'])
         return result
 
 
