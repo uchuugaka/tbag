@@ -69,7 +69,7 @@ class DBBase(object):
             datas.append(item)
         return datas
 
-    async def find_one(self, spec, fields=None, sort=[]):
+    async def find_one(self, spec={}, fields=None, sort=[]):
         """ 查找单条数据
         @param spec 查询条件
         @param fields 返回数据的字段
