@@ -96,6 +96,7 @@ class WebHandler(RequestHandler):
             'msg': msg,
             'data': self._to_representation(data)
         }
+        self.set_status(200, 'OK')
         self.do_finish(result)
 
     def do_http_error(self, err_code=500, msg='error', data=None):
