@@ -7,7 +7,7 @@
 import os
 
 from tornado.ioloop import IOLoop
-from tornado.options import options
+from tornado import options
 
 from tbag.utils.routes import route
 from tbag.utils import log as logger
@@ -29,6 +29,7 @@ class TornadoContext(object):
             `http_port` HTTP监听端口号
             `mysql_config`  mysql配置
             `mongo_config`  mongodb配置
+            `cors`      是否支持跨域，True为支持，False为不支持，默认False
         """
         configs = kwargs
         src_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -56,6 +57,10 @@ class TornadoContext(object):
 
         # mongodb配置
         self.mongo_config = configs.get('mongo_config')
+
+        # 是否支持跨域，True为支持，False为不支持，默认False
+        self.cors = configs.get('cors', False)
+        options.define('cors', self.cors, help='set http response header `Access-Control-Allow-Origin` to `*`')
 
         self._init_logger()
         self._print_configures()

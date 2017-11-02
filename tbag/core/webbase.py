@@ -7,6 +7,7 @@
 import json
 import datetime
 
+from tornado.options import options
 from tornado.web import RequestHandler
 
 from tbag.utils.error import errors, const
@@ -80,29 +81,37 @@ class WebHandler(RequestHandler):
     def do_success(self, data={}, msg='success'):
         """ API成功返回
         """
-        results = {
+        result = {
             'code': 0,
             'msg': msg,
             'data': self._to_representation(data)
         }
-        self.finish(results)
+        self.do_finish(result)
 
     def do_failed(self, code=400, msg='error', data={}):
         """ API失败返回
         """
-        results = {
+        result = {
             'code': code,
             'msg': msg,
             'data': self._to_representation(data)
         }
-        self.set_status(200, 'OK')
-        self.finish(results)
+        self.do_finish(result)
 
-    def do_http_error(self, err_code=500, msg='error'):
+    def do_http_error(self, err_code=500, msg='error', data=None):
         """ http失败返回
         """
         self.set_status(err_code, msg)
-        self.finish()
+        self.do_finish(data)
+
+    def do_finish(self, result):
+        """ 写入result
+        """
+        # 跨域
+        cors = options.cors
+        if cors:
+            self.set_header("Access-Control-Allow-Origin", "*")
+        self.finish(result)
 
     def write_error(self, status_code, **kwargs):
         """ 这儿可以捕获自定义异常类
