@@ -1,4 +1,4 @@
 # -*- coding:utf-8 -*-
 
 author = 'huangtao'
-version = (1, 1, 6)
+version = (1, 1, 7)
