@@ -10,20 +10,12 @@ import datetime
 from tornado.options import options
 from tornado.web import RequestHandler
 
-from tbag.utils import log as logger
 from tbag.utils.error import errors, const
 
 
 class WebHandler(RequestHandler):
     """ web基类
     """
-
-    @property
-    def data(self):
-        if self.request.body:
-            return json.loads(self.request.body.decode('utf-8'))
-        else:
-            return {}
 
     def _to_representation(self, instance):
         if isinstance(instance, datetime.datetime):
@@ -63,6 +55,10 @@ class WebHandler(RequestHandler):
             value = self.get_param(key)
             values.append(value)
         return values
+
+    @property
+    def data(self):
+        return self.get_body()
 
     def get_body(self, parse_json=True):
         """ 提取http请求的body数据
@@ -117,6 +113,7 @@ class WebHandler(RequestHandler):
 
     def write_error(self, status_code, **kwargs):
         """ 这儿可以捕获自定义异常类
+        * 此重写了父类函数
         """
         exc_info = kwargs.get("exc_info")
         ex = exc_info[1]
@@ -125,6 +122,9 @@ class WebHandler(RequestHandler):
             self.do_failed(ex.code, ex.msg, ex.data)
         else:
             self.do_http_error(500, 'SYSTEM ERRROR')
+
+    async def head(self, *args, **kwargs):
+        await self.process('_head_', *args, **kwargs)
 
     async def get(self, *args, **kwargs):
         await self.process('_get_', *args, **kwargs)
@@ -138,38 +138,33 @@ class WebHandler(RequestHandler):
     async def delete(self, *args, **kwargs):
         await self.process('_delete_', *args, **kwargs)
 
+    async def patch(self, *args, **kwargs):
+        await self.process('_patch_', *args, **kwargs)
+
+    async def options(self, *args, **kwargs):
+        await self.process('_options_', *args, **kwargs)
+
     async def process(self, func_name, *args, **kwargs):
         """ 处理请求
-        @param func_name 方法名 [_get_, _post_, _put_, _delete_]
+        @param func_name 方法名 [_head_, _get_, _post_, _put_, _delete_, _patch_, _options_]
         @note 此处执行处理请求前的准备工作和处理请求完成的收尾工作
         """
         func = getattr(self, func_name, None)
         if not func:
             self.do_http_error(404, 'NOT FOUND')
             return
-
         await self.do_prepare()
         await func(*args, **kwargs)
         await self.do_complete()
 
-    async def check_user_privilege(self):
-        """ 校验用户是否有权限
-        """
-        logger.exception('not implement!', caller=self)
-
-    async def _authenticate(self):
-        """ 校验用户
-        """
-        logger.exception('not implement!', caller=self)
-
     async def do_prepare(self):
         """ 准备工作
+        * 在执行http方法之前，可以做类似统计、权限校验等操作
         """
-        if getattr(self, 'check_auth', False):
-            await self._authenticate()
-            await self.check_user_privilege()
+        pass
 
     async def do_complete(self):
         """ 完成工作
+        * 在执行http方法之后，可以做类似统计、日志记录等操作
         """
         pass
