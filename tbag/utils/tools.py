@@ -55,7 +55,7 @@ def date_str_to_dt(date_str=None, fmt='%Y%m%d', delta_day=0):
     if not date_str:
         dt = datetime.datetime.today()
     else:
-        dt = datetime.datetime.strptime(date_str, fmt).date()
+        dt = datetime.datetime.strptime(date_str, fmt)
     if delta_day:
         dt += datetime.timedelta(days=delta_day)
     return dt
