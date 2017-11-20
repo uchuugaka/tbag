@@ -1,10 +1,12 @@
 # -*- coding:utf-8 -*-
 
 """
-    初始化日志、uri路由、数据库连接，启动服务器心跳
-"""
+初始化日志、uri路由、数据库连接，启动服务器心跳
 
-import os
+Author:     huangtao
+Date:       2017/8/8
+ChangeLog:  2017/11/20  删除root_dir配置
+"""
 
 from tornado.ioloop import IOLoop
 from tornado import options
@@ -32,10 +34,6 @@ class TornadoContext(object):
             `cors`      是否支持跨域，True为支持，False为不支持，默认False
         """
         configs = kwargs
-        src_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-        root_dir = os.path.dirname(src_dir)
-        self.src_dir = src_dir
-        self.root_dir = root_dir
 
         # 运行模式
         self.run_mode = configs.get('run_mode', 'console')
