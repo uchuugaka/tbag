@@ -38,7 +38,7 @@ class AsyncHttpRequests(object):
             url = url_concat(url, params)
         http_client = AsyncHTTPClient()
         response = await http_client.fetch(url, method='GET', headers=headers, request_timeout=timeout)
-        if response.code != 200:
+        if response.code not in (200, 201, 202, 203, 204, 205, 206):
             logger.error('url:', url, 'response code:', response.code, 'response body:', response.body, caller=cls)
             raise errors.CustomError(const.ERR_MSG_INVALID)
         if response.body:
@@ -67,13 +67,15 @@ class AsyncHttpRequests(object):
         if params:
             url = url_concat(url, params)
         if body:
-            if encode_type == 'utf-8':
+            if not encode_type:
+                pass
+            elif encode_type == 'utf-8':
                 body = json.dumps(body)
             else:
                 body = urlencode(body, encoding=encode_type)
         http_client = AsyncHTTPClient()
         response = await http_client.fetch(url, method='POST', body=body, headers=headers, request_timeout=timeout)
-        if response.code != 200:
+        if response.code not in (200, 201, 202, 203, 204, 205, 206):
             logger.error('url:', url, 'post data:', body, 'response code:', response.code, 'response body:',
                          response.body, caller=cls)
             raise errors.CustomError(const.ERR_MSG_INVALID)

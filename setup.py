@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
     name='tbag',
-    version='1.1.8',
+    version='1.1.9',
 
     packages=['tbag',
               'tbag.core',
