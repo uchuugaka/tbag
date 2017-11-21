@@ -8,6 +8,7 @@ Date:   2017/07/31
 UPDATE:
     2017/09/19  增加对POST请求body的编码格式区分
     2017/09/26  增加请求超时时间
+    2017/11/21  增加对返回结果decode_type为空的判断
 """
 
 import json
@@ -42,7 +43,9 @@ class AsyncHttpRequests(object):
             logger.error('url:', url, 'response code:', response.code, 'response body:', response.body, caller=cls)
             raise errors.CustomError(const.ERR_MSG_INVALID)
         if response.body:
-            data = response.body.decode(decode_type)
+            data = response.body
+            if decode_type:
+                data = data.decode(decode_type)
             if parse_json:
                 return json.loads(data)
             else:
@@ -80,7 +83,9 @@ class AsyncHttpRequests(object):
                          response.body, caller=cls)
             raise errors.CustomError(const.ERR_MSG_INVALID)
         if response.body:
-            data = response.body.decode(decode_type)
+            data = response.body
+            if decode_type:
+                data = data.decode(decode_type)
             if parse_json:
                 return json.loads(data)
             else:
