@@ -9,6 +9,8 @@ Update:
         2017/07/24  1、增加 find_one_and_update 接口;
                     2、增加 find_one_and_delete 接口;
         2017/08/16  1、增加数据库连接鉴权;
+        2017/12/12  1、初始化参数去除port;
+                    2、修改基类名DBBase为MongoDBBase;
 """
 
 import copy
@@ -25,20 +27,23 @@ MONGO_CONN = None
 DELETE_FLAG = 'delete'  # True 已经删除，False 或者没有该字段表示没有删除
 
 
-def initMongodb(host='127.0.0.1', port=27017, dbuser='', dbpass='', dbname='admin'):
+def initMongodb(host='127.0.0.1:27017', username='', password='', dbname='admin'):
     """ 初始化mongodb连接
     """
-    if dbuser and dbpass:
-        uri = "mongodb://%s:%s@%s:%s/%s" % (quote_plus(dbuser), quote_plus(dbpass), host, port, dbname)
+    if username and password:
+        uri = 'mongodb://{username}:{password}@{host}/{dbname}'.format(username=quote_plus(username),
+                                                                       password=quote_plus(password),
+                                                                       host=quote_plus(host),
+                                                                       dbname=dbname)
     else:
-        uri = "mongodb://%s:%s" % (host, port)
+        uri = "mongodb://{host}/{dbname}".format(host=host, dbname=dbname)
     mongo_client = motor.motor_tornado.MotorClient(uri)
     global MONGO_CONN
     MONGO_CONN = mongo_client
     logger.info('create mongodb connection pool.')
 
 
-class DBBase(object):
+class MongoDBBase(object):
     """ mongodb 数据库操作接口
     """
 
@@ -207,4 +212,4 @@ class DBBase(object):
         return result
 
 
-__all__ = [initMongodb, DBBase]
+__all__ = [initMongodb, MongoDBBase]

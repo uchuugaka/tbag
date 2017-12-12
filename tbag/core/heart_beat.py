@@ -1,7 +1,11 @@
 # -*- coding:utf-8 -*-
 
 """
-    服务器心跳
+服务器心跳
+
+Author: huangtao
+Date:   2017/05/08
+Update: 2017/12/12  1、修改心跳日志打印为每5秒一次;
 """
 
 import datetime
@@ -26,7 +30,8 @@ class HeartBeat(object):
         self._count += 1
         if self._count > 9999999:
             self._count = 1
-        logger.info('do server heartbeat, count:', self._count, caller=self)
+        if self._count % 5 == 0:
+            logger.info('do server heartbeat, count:', self._count, caller=self)
         IOLoop.current().add_timeout(datetime.timedelta(seconds=self._interval), self.start)
         for task in self.tasks:
             func = task['func']

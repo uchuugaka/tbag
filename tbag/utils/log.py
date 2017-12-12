@@ -3,8 +3,9 @@
 """
 日志打印
 
-Author:     huangtao
-Date:       2017/08/22
+Author: huangtao
+Date:   2017/08/22
+Update: 2017/12/12  1、消息里增加session_id;
 """
 
 import os
@@ -34,39 +35,39 @@ def initLogger(log_level='debug', log_path=None, logfile_name=None):
         handler = logging.handlers.TimedRotatingFileHandler(logfile, 'midnight')
     else:
         handler = logging.StreamHandler()
-    fmt_str = '[%(levelname)1.1s %(asctime)s] %(message)s'
+    fmt_str = '%(levelname)1.1s [%(asctime)s] %(message)s'
     fmt = log.LogFormatter(fmt=fmt_str, datefmt=None)
     handler.setFormatter(fmt)
     logger.addHandler(handler)
 
 
 def info(*args, **kwargs):
-    func_name, kwargs = _log_func_name(*args, **kwargs)
+    func_name, kwargs = _log_msg_header(*args, **kwargs)
     logging.info(_log(func_name, *args, **kwargs))
 
 
 def warn(*args, **kwargs):
-    func_name, kwargs = _log_func_name(*args, **kwargs)
-    logging.warning(_log(func_name, *args, **kwargs))
+    msg_header, kwargs = _log_msg_header(*args, **kwargs)
+    logging.warning(_log(msg_header, *args, **kwargs))
 
 
 def debug(*args, **kwargs):
-    func_name, kwargs = _log_func_name(*args, **kwargs)
-    logging.debug(_log(func_name, *args, **kwargs))
+    msg_header, kwargs = _log_msg_header(*args, **kwargs)
+    logging.debug(_log(msg_header, *args, **kwargs))
 
 
 def error(*args, **kwargs):
     logging.error('*' * 40)
-    func_name, kwargs = _log_func_name(*args, **kwargs)
-    logging.error(_log(func_name, *args, **kwargs))
+    msg_header, kwargs = _log_msg_header(*args, **kwargs)
+    logging.error(_log(msg_header, *args, **kwargs))
     logging.error('*' * 40)
 
 
 exception = error
 
 
-def _log(func_name, *args, **kwargs):
-    _log_msg = func_name
+def _log(msg_header, *args, **kwargs):
+    _log_msg = msg_header
     for l in args:
         if type(l) == tuple :
             ps = str(l)
@@ -84,21 +85,29 @@ def _log(func_name, *args, **kwargs):
     return _log_msg
 
 
-def _log_func_name(*args, **wkargs):
-    """ 获取方法名
-    * logger.xxx(... caller=self) for instance method
-    * logger.xxx(... caller=cls) for @classmethod
+def _log_msg_header(*args, **kwargs):
+    """ 打印日志的message头
+    @param kwargs['caller'] 调用的方法所属类对象
+    @param kwargs['session_id'] 调用的方法所带的session_id
+    * NOTE: logger.xxx(... caller=self) for instance method
+            logger.xxx(... caller=cls) for @classmethod
     """
-    caller_cls_name = ""
+    cls_name = ''
+    func_name = sys._getframe().f_back.f_back.f_code.co_name
+    session_id = '-'
     try:
-        _caller = wkargs.get('caller', None)
+        _caller = kwargs.get('caller', None)
         if _caller:
             if not hasattr(_caller, '__name__'):
                 _caller = _caller.__class__
-            caller_cls_name = _caller.__name__
-            del wkargs['caller']
+            cls_name = _caller.__name__
+            del kwargs['caller']
+        session_id = kwargs.get('session_id', '-')
+        if session_id:
+            del kwargs['session_id']
     except:
         pass
-
-    func_name_str = '[' + caller_cls_name + '.' + sys._getframe().f_back.f_back.f_code.co_name + '] '
-    return func_name_str, wkargs
+    finally:
+        msg_header = '[{cls_name}.{func_name}] [{session_id}] '.format(cls_name=cls_name, func_name=func_name,
+                                                                       session_id=session_id)
+        return msg_header, kwargs
