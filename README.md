@@ -9,6 +9,12 @@
 
 
 #### Change Logs:
+**2017/12/17**:
+```
+    Version: 1.2.2
+    1. 删除tbag.core.web_base模块，新模块更新名字为tbag.core.web;
+```
+
 **2017/12/12**:
 ```
     Version: 1.2.1
