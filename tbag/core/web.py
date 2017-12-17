@@ -1,7 +1,11 @@
 # -*- coding:utf-8 -*-
 
 """
-    web基类
+web基类
+Author: huangtao
+Date:   2017/8/8
+Update: 2017/12/12  1. 增加do_prepare/do_complete函数;
+        2017/12/17  1. 增加中间件;
 """
 
 import json
@@ -161,10 +165,16 @@ class WebHandler(RequestHandler):
         """ 准备工作
         * 在执行http方法之前，可以做类似统计、权限校验等操作
         """
-        pass
+        # 中间件
+        middlewares = options.middlewares
+        for m in middlewares:
+            await m.prepare(self)
 
     async def do_complete(self):
         """ 完成工作
         * 在执行http方法之后，可以做类似统计、日志记录等操作
         """
-        pass
+        # 中间件
+        middlewares = options.middlewares
+        for m in middlewares:
+            await m.finish(self)

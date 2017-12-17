@@ -1,5 +1,12 @@
 # -*- coding:utf-8 -*-
 
+"""
+错误类型
+Author: huangtao
+Date:   2017/09/21
+"""
+
+
 from tbag.utils.error import const
 
 

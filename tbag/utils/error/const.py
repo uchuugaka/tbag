@@ -1,8 +1,11 @@
 # -*- coding:utf-8 -*-
 
 """
-    错误码对应的错误原因
+错误码对应的错误原因
+Author: huangtao
+Date:   2017/09/21
 """
+
 
 # 成功消息
 MSG_OK = {'code': 0, 'msg': '请求成功'}

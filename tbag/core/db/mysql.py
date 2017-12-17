@@ -5,6 +5,7 @@ MySQL async操作接口
 
 Author: huangtao
 Date:   2017/05/08
+Update: 2017/12/17  1. 修改配置参数user为username;
 """
 
 from tornado_mysql import pools, cursors
@@ -14,18 +15,18 @@ pools.DEBUG = True
 CONN_POOL = None
 
 
-def initMySQL(host='127.0.0.1', port=3306, user='', password='', db='mysql'):
+def initMySQL(host='127.0.0.1', port=3306, username='', password='', db='mysql'):
     """ 初始化mysql连接池
     @param host MySQL数据库ip
     @param port MySQL数据库端口
-    @param user MySQL数据库用户名
+    @param username MySQL数据库用户名
     @param password MySQL数据库密码
     @param db 需要连接的数据库名
     """
     mysql_config = {
         'host': host,
         'port': port,
-        'user': user,
+        'user': username,
         'passwd': password,
         'db': db,
         'cursorclass': cursors.DictCursor,

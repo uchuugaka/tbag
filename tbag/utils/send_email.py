@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 
 """
-    发送邮件
+发送邮件
+Author: huangtao
+Date:   2017/09/21
 """
 
 import email
