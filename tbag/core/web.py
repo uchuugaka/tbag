@@ -6,6 +6,9 @@ Author: huangtao
 Date:   2017/8/8
 Update: 2017/12/12  1. 增加do_prepare/do_complete函数;
         2017/12/17  1. 增加中间件;
+        2017/12/18  1. 修改错误返回类型;
+                    2. 增加 query_params 及 data 属性方法；
+                    3. 删除 do_http_error 方法;
 """
 
 import json
@@ -14,28 +17,47 @@ import datetime
 from tornado.options import options
 from tornado.web import RequestHandler
 
-from tbag.utils.error import errors, const
+from tbag.core import exceptions
+from tbag.utils import datetime_help
 
 
 class WebHandler(RequestHandler):
     """ web基类
     """
 
-    def _to_representation(self, instance):
-        if isinstance(instance, datetime.datetime):
-            return instance.isoformat() + 'Z'
+    @property
+    def query_params(self):
+        if not hasattr(self, '__query_params'):
+            self.__query_params = {}
+            for key, value in self.request.arguments.items():
+                value = [i.decode('utf-8') for i in value]
+                self.__query_params[key] = value if len(value) > 1 else value[0]
+        return self.__query_params
 
+    @property
+    def data(self):
+        if not hasattr(self, '__data'):
+            self.__data = None
+            if self.request.body:
+                try:
+                    self.__data = json.loads(self.request.body.decode('utf-8'))
+                except Exception:
+                    raise exceptions.ValidationError('请求的body是非json格式')
+        return self.__data
+
+    def _to_representation(self, instance):
+        """ 针对datetime类型数据做序列化
+        """
+        if isinstance(instance, datetime.datetime):
+            return datetime_help.get_time_str(instance)
         if isinstance(instance, datetime.date):
             return instance.isoformat()
-
         if isinstance(instance, list):
             return [self._to_representation(item) for item in instance]
-
         if isinstance(instance, dict):
             for key in instance.keys():
                 instance[key] = self._to_representation(instance[key])
             return instance
-
         else:
             return instance
 
@@ -60,10 +82,6 @@ class WebHandler(RequestHandler):
             values.append(value)
         return values
 
-    @property
-    def data(self):
-        return self.get_body()
-
     def get_body(self, parse_json=True):
         """ 提取http请求的body数据
         @param parse_json 是否将body数据解析成json格式
@@ -76,7 +94,7 @@ class WebHandler(RequestHandler):
             try:
                 body = json.loads(body.decode('utf8'))
             except:
-                raise errors.CustomError(const.ERR_MSG_BODY_ERROR)
+                exceptions.ValidationError(msg='请求body数据格式错误')
         return body
 
     def do_success(self, data={}, msg='success'):
@@ -100,32 +118,26 @@ class WebHandler(RequestHandler):
         self.set_status(200, 'OK')
         self.do_finish(result)
 
-    def do_http_error(self, err_code=500, msg='error', data=None):
-        """ http失败返回
-        """
-        self.set_status(err_code, msg)
-        self.do_finish(data)
-
     def do_finish(self, result):
         """ 写入result
         """
         # 跨域
         cors = options.cors
         if cors:
-            self.set_header("Access-Control-Allow-Origin", "*")
+            self.set_header('Access-Control-Allow-Origin', '*')
         self.finish(result)
 
     def write_error(self, status_code, **kwargs):
         """ 这儿可以捕获自定义异常类
         * 此重写了父类函数
         """
-        exc_info = kwargs.get("exc_info")
+        exc_info = kwargs.get('exc_info')
         ex = exc_info[1]
 
-        if isinstance(ex, (errors.CustomError, errors.AuthError, errors.ParamError, errors.SystemError)):
+        if isinstance(ex, exceptions.CustomException):
             self.do_failed(ex.code, ex.msg, ex.data)
         else:
-            self.do_http_error(500, 'SYSTEM ERRROR')
+            self.do_failed(500, '服务器内部错误')
 
     async def head(self, *args, **kwargs):
         await self.process('_head_', *args, **kwargs)
@@ -155,8 +167,7 @@ class WebHandler(RequestHandler):
         """
         func = getattr(self, func_name, None)
         if not func:
-            self.do_http_error(404, 'NOT FOUND')
-            return
+            raise exceptions.NotFound()
         await self.do_prepare()
         await func(*args, **kwargs)
         await self.do_complete()
