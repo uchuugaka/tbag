@@ -8,11 +8,18 @@ Date:   2017/8/8
 Update: 2017/11/20  1. 删除root_dir配置;
         2017/12/17  1. 修改配置参数传入方式，改为传入配置模块;
                     2. 增加middleware中间件;
+        2017/12/17  1. 增加web app初始化;
 """
 
-from tornado.ioloop import IOLoop
-from tornado import options
+import sys
 
+import tornado.web
+import tornado.httpserver
+from tornado import options
+from tornado.ioloop import IOLoop
+from tornado.web import Application
+
+from tbag.utils import tools
 from tbag.utils.routes import route
 from tbag.utils import log as logger
 from tbag.core.middleware import Middleware
@@ -44,12 +51,16 @@ class TornadoContext(object):
         self._init_middlewares()
         self._init_db_instance()
         self._init_uri_routes()
+        self._init_application()
         self._do_heartbeat()
 
     def _load_settings(self):
         """ 加载配置
         """
         settings = __import__(self.setting_module, {}, {}, ["models"])
+
+        # 调试模式
+        self.debug = getattr(settings, 'DEBUG', False)
 
         # 运行模式
         self.run_mode = getattr(settings, 'RUN_MODE', 'console')
@@ -61,7 +72,10 @@ class TornadoContext(object):
         self.handler_pathes = getattr(settings, 'HANDLER_PATHES', [])
 
         # HTTP监听端口号
-        self.http_port = getattr(settings, 'HTTP_PORT', [])
+        if len(sys.argv) > 1:
+            self.http_port = sys.argv[1]
+        else:
+            self.http_port = getattr(settings, 'HTTP_PORT', [])
 
         # 中间件
         self.middlewares = getattr(settings, 'MIDDLEWARES', [])
@@ -75,6 +89,9 @@ class TornadoContext(object):
         # 是否支持跨域，True为支持，False为不支持，默认False
         self.cors = getattr(settings, 'ALLOW_CORS', False)
         options.define('cors', self.cors, help='set http response header `Access-Control-Allow-Origin` to `*`')
+
+        # cookie加密字符串
+        self.cookie_secret = getattr(settings, 'COOKIE_SECRET', tools.get_uuid4())
 
     def _init_logger(self):
         """ 初始化日志
@@ -130,6 +147,19 @@ class TornadoContext(object):
             logger.info('middleware:', middleware, caller=self)
         options.define('middlewares', middlewares, help='set web api middlewares')
         logger.info('load middleware done <<<', caller=self)
+
+    def _init_application(self):
+        """ 初始化HTTP监听服务
+        """
+        settings = {
+            'debug': self.debug,
+            'cookie_secret': self.cookie_secret
+        }
+        app = Application(self.handlers, **settings)
+        http_server = tornado.httpserver.HTTPServer(app)
+        http_server.listen(self.http_port)
+        logger.info('listen http port at:', self.http_port, caller=self)
+
 
     def _do_heartbeat(self):
         """ 服务器心跳
