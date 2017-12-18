@@ -31,7 +31,8 @@ class TornadoContext(object):
 
     def __init__(self, setting_module):
         """ 初始化
-        @param setting_module 配置木块
+        @param setting_module 配置模块
+            `DEBUG`     debug模式，默认为False
             `RUN_MODE`  运行模式，online为线上服务器，inner-test为内测测试服，test为测试服，console为本地调试
                         online/inner-test/test模式将会把日志写入日志文件，console模式不写日志文件而打印到控制台
             `LOG`       日志配置
@@ -43,6 +44,7 @@ class TornadoContext(object):
             `MYSQL`     mysql配置
             `MONGODB`   mongodb配置
             `ALLOW_CORS`    是否支持跨域，True为支持，False为不支持，默认False
+            `COOKIE_SECRET` cookie加密字符串
         """
         self.setting_module = setting_module
 
