@@ -12,7 +12,7 @@ class CustomException(Exception):
     DEFAULT_DATA = None
     DEFAULT_CODE = 500
 
-    def __init__(self, msg=DEFAULT_MSG, code=DEFAULT_DATA, data=DEFAULT_CODE):
+    def __init__(self, msg=DEFAULT_MSG, code=DEFAULT_CODE, data=DEFAULT_DATA):
         self.msg = msg
         self.data = data
         self.code = code
