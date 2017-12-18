@@ -127,8 +127,3 @@ def get_date_str(dt: datetime.date = None):
     if not dt:
         dt = datetime.date.today()
     return dt.isoformat()
-
-
-if __name__ == '__main__':
-
-    print(get_utc_time(datetime.datetime.now()))
