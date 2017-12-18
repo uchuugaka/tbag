@@ -139,7 +139,7 @@ class TornadoContext(object):
             l = m.split('.')
             class_name = l[-1]
             model = '.'.join(l[:-1])
-            mo = __import__(model, {}, {}, ["classes"])
+            mo = __import__(model, {}, {}, ['classes'])
             middleware = getattr(mo, class_name)
             instance = middleware()
             if not isinstance(instance, Middleware):
@@ -161,7 +161,6 @@ class TornadoContext(object):
         http_server = tornado.httpserver.HTTPServer(app)
         http_server.listen(self.http_port)
         logger.info('listen http port at:', self.http_port, caller=self)
-
 
     def _do_heartbeat(self):
         """ 服务器心跳
