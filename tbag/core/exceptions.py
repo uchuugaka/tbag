@@ -2,20 +2,23 @@
 
 """
 错误类型定义
+Author: huangtao
+Date:   2017/12/7
+Update: 2017/12/22  1.  修复bug: 继承类默认msg和code失效；
 """
 
 
 class CustomException(Exception):
     """ 通用异常类型错误
     """
-    DEFAULT_MSG = 'A server error occurred.'
-    DEFAULT_DATA = None
-    DEFAULT_CODE = 500
+    default_msg = 'A server error occurred.'
+    default_data = None
+    default_code = 500
 
-    def __init__(self, msg=DEFAULT_MSG, code=DEFAULT_CODE, data=DEFAULT_DATA):
-        self.msg = msg
+    def __init__(self, msg=None, code=None, data=None):
+        self.msg = msg if msg is not None else self.default_msg
+        self.code = code if code is not None else self.default_code
         self.data = data
-        self.code = code
 
     def __str__(self):
         str_msg = '[{code}] {msg}'.format(code=self.code, msg=self.msg)
@@ -25,54 +28,54 @@ class CustomException(Exception):
 class ValidationError(CustomException):
     """ 字段校验错误
     """
-    DEFAULT_MSG = 'Invalid input.'
-    DEFAULT_CODE = 400
+    default_msg = 'Invalid input.'
+    default_code = 400
 
 
 class AuthenticationFailed(CustomException):
     """ 权限校验失败
     """
-    DEFAULT_MSG = 'Incorrect authentication credentials.'
-    DEFAULT_CODE = 401
+    default_msg = 'Incorrect authentication credentials.'
+    default_code = 401
 
 
 class NotAuthenticated(CustomException):
     """ 未授权
     """
-    DEFAULT_MSG = 'Authentication credentials were not provided.'
-    DEFAULT_CODE = 401
+    default_msg = 'Authentication credentials were not provided.'
+    default_code = 401
 
 
 class PermissionDenied(CustomException):
     """ 权限不够
     """
-    DEFAULT_MSG = 'You do not have permission to perform this action.'
-    DEFAULT_CODE = 403
+    default_msg = 'You do not have permission to perform this action.'
+    default_code = 403
 
 
 class NotFound(CustomException):
     """ 未找到
     """
-    DEFAULT_MSG = 'Not found.'
-    DEFAULT_CODE = 404
+    default_msg = 'Not found.'
+    default_code = 404
 
 
 class ArgumentNoneException(CustomException):
     """ 字段丢失
     """
-    DEFAULT_MSG = 'Argument can not be None'
-    DEFAULT_CODE = 500
+    default_msg = 'Argument can not be None'
+    default_code = 500
 
 
 class InvalidOperationException(CustomException):
     """ 非法操作
     """
-    DEFAULT_MSG = 'Operation is invalid'
-    DEFAULT_CODE = 500
+    default_msg = 'Operation is invalid'
+    default_code = 500
 
 
 class TimeoutException(CustomException):
     """ 超时
     """
-    DEFAULT_MSG = 'Timeout'
-    DEFAULT_CODE = 502
+    default_msg = 'Timeout'
+    default_code = 502
