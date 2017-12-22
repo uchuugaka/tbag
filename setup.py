@@ -5,12 +5,11 @@ from distutils.core import setup
 
 setup(
     name='tbag',
-    version='1.2.7',
+    version='1.2.8',
     packages=['tbag',
               'tbag.core',
               'tbag.core.db',
               'tbag.utils',
-              'tbag.utils.error',
               ],
     description='A Tornado tools bag.',
     url='https://github.com/Demon-Hunter/tbag',

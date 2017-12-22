@@ -9,6 +9,13 @@
 
 
 #### Change Logs:
+**2017/12/22**:
+```
+    Version: 1.2.8
+    1. 修复bug: 继承类默认msg和code失效;
+    2.delete useless mudoles: tbag.utils.errors;
+```
+
 **2017/12/18**:
 ```
     Version: 1.2.4
