@@ -2,13 +2,19 @@
 ## Tornado框架工具包
 
 
-#### Installion
+### Installion
 ```
     pip install tbag
 ```
 
 
-#### Change Logs:
+### Change Logs:
+**2017/12/26**:
+```
+    Version: 1.2.9
+    1. 修复bug: 引入被删除的模块;
+```
+
 **2017/12/22**:
 ```
     Version: 1.2.8
