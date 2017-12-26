@@ -8,15 +8,16 @@ Date:   2017/07/31
 Update: 2017/09/19  1. 增加对POST请求body的编码格式区分;
         2017/09/26  1. 增加请求超时时间;
         2017/11/21  1. 增加对返回结果decode_type为空的判断;
+        2017/12/26  1. 修复bug: 引入被删除的模块;
 """
 
 import json
 
-from tornado.httputil import url_concat, urlencode
 from tornado.httpclient import AsyncHTTPClient
+from tornado.httputil import url_concat, urlencode
 
+from tbag.core import exceptions
 from tbag.utils import log as logger
-from tbag.utils.error import errors, const
 
 
 class AsyncHttpRequests(object):
@@ -40,7 +41,8 @@ class AsyncHttpRequests(object):
         response = await http_client.fetch(url, method='GET', headers=headers, request_timeout=timeout)
         if response.code not in (200, 201, 202, 203, 204, 205, 206):
             logger.error('url:', url, 'response code:', response.code, 'response body:', response.body, caller=cls)
-            raise errors.CustomError(const.ERR_MSG_INVALID)
+            msg = '请求url失败: {url}'.format(url=url)
+            raise exceptions.CustomException(msg=msg)
         if response.body:
             data = response.body
             if decode_type:
@@ -80,7 +82,8 @@ class AsyncHttpRequests(object):
         if response.code not in (200, 201, 202, 203, 204, 205, 206):
             logger.error('url:', url, 'post data:', body, 'response code:', response.code, 'response body:',
                          response.body, caller=cls)
-            raise errors.CustomError(const.ERR_MSG_INVALID)
+            msg = '请求url失败: {url}'.format(url=url)
+            raise exceptions.CustomException(msg=msg)
         if response.body:
             data = response.body
             if decode_type:
