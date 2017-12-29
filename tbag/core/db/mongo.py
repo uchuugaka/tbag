@@ -11,6 +11,7 @@ Update:
         2017/08/16  1、增加数据库连接鉴权;
         2017/12/12  1、初始化参数去除port;
                     2、修改基类名DBBase为MongoDBBase;
+        2017/12/29  1、修复bug: 处理查询条件里_id的各种类型;
 """
 
 import copy
@@ -65,7 +66,7 @@ class MongoDBBase(object):
         * NOTE: 必须传入limit，否则默认返回数据条数可能因为pymongo的默认值而改变
         """
         if '_id' in spec:
-            spec['_id'] = ObjectId(spec['_id'])
+            spec['_id'] = self._convert_id_object(spec['_id'])
         spec[DELETE_FLAG] = {'$ne': True}
         datas = []
         cursor = self.dao.find(spec, fields, sort=sort, skip=skip, limit=limit)
@@ -128,7 +129,7 @@ class MongoDBBase(object):
         """
         spec[DELETE_FLAG] = {'$ne': True}
         if '_id' in spec:
-            spec['_id'] = ObjectId(spec['_id'])
+            spec['_id'] = self._convert_id_object(spec['_id'])
         set_fields = update_fields.get('$set', {})
         set_fields['modify_time'] = tools.get_utc_time()
         update_fields['$set'] = set_fields
@@ -146,7 +147,7 @@ class MongoDBBase(object):
         """
         spec[DELETE_FLAG] = {'$ne': True}
         if '_id' in spec:
-            spec['_id'] = ObjectId(spec['_id'])
+            spec['_id'] = self._convert_id_object(spec['_id'])
         update_fields = {'$set': {DELETE_FLAG: True}}
         delete_count = await self.update(spec, update_fields, multi=True)
         return delete_count
@@ -172,7 +173,7 @@ class MongoDBBase(object):
         """
         spec[DELETE_FLAG] = {'$ne': True}
         if '_id' in spec:
-            spec['_id'] = ObjectId(spec['_id'])
+            spec['_id'] = self._convert_id_object(spec['_id'])
         result = await self.dao.distinct(key, spec)
         return result
 
@@ -187,7 +188,7 @@ class MongoDBBase(object):
         """
         spec[DELETE_FLAG] = {'$ne': True}
         if '_id' in spec:
-            spec['_id'] = ObjectId(spec['_id'])
+            spec['_id'] = self._convert_id_object(spec['_id'])
         set_fields = update_fields.get('$set', {})
         set_fields['modify_time'] = tools.get_utc_time()
         update_fields['$set'] = set_fields
@@ -205,11 +206,23 @@ class MongoDBBase(object):
         """
         spec[DELETE_FLAG] = {'$ne': True}
         if '_id' in spec:
-            spec['_id'] = ObjectId(spec['_id'])
+            spec['_id'] = self._convert_id_object(spec['_id'])
         result = await self.dao.find_one_and_delete(spec, projection=fields)
         if result and '_id' in result:
             result['_id'] = str(result['_id'])
         return result
+
+    def _convert_id_object(self, origin):
+        """ 将字符串的_id转换成ObjectId类型
+        """
+        if isinstance(origin, str):
+            return ObjectId(origin)
+        elif isinstance(origin, (list, set)):
+            return [ObjectId(item) for item in origin]
+        elif isinstance(origin, dict):
+            for key, value in origin.items():
+                origin[key] = self._convert_id_object(value)
+        return origin
 
 
 __all__ = [initMongodb, MongoDBBase]
