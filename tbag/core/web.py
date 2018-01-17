@@ -7,8 +7,9 @@ Date:   2017/8/8
 Update: 2017/12/12  1. 增加do_prepare/do_complete函数;
         2017/12/17  1. 增加中间件;
         2017/12/18  1. 修改错误返回类型;
-                    2. 增加 query_params 及 data 属性方法；
+                    2. 增加 query_params 及 data 属性方法;
                     3. 删除 do_http_error 方法;
+        2018/01/17  1. 跨域增加设置 Access-Control-Allow-Headers;
 """
 
 import json
@@ -125,6 +126,7 @@ class WebHandler(RequestHandler):
         cors = options.cors
         if cors:
             self.set_header('Access-Control-Allow-Origin', '*')
+            self.set_header('Access-Control-Allow-Headers', '*')
         self.finish(result)
 
     def write_error(self, status_code, **kwargs):
