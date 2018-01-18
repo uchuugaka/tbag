@@ -10,6 +10,7 @@ Update: 2017/12/12  1. 增加do_prepare/do_complete函数;
                     2. 增加 query_params 及 data 属性方法;
                     3. 删除 do_http_error 方法;
         2018/01/17  1. 跨域增加设置 Access-Control-Allow-Headers;
+        2018/01/18  1. 返回datetime类型时间转换为UTC时间;
 """
 
 import json
@@ -50,7 +51,7 @@ class WebHandler(RequestHandler):
         """ 针对datetime类型数据做序列化
         """
         if isinstance(instance, datetime.datetime):
-            return datetime_help.get_time_str(instance)
+            return datetime_help.get_time_str(instance, datetime_help.UTC)
         if isinstance(instance, datetime.date):
             return instance.isoformat()
         if isinstance(instance, list):
