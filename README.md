@@ -2,11 +2,19 @@
 ## Tornado框架工具包
 
 
-### Installion
+### Installation
 ```
     pip install tbag
 ```
 
+### Change Logs:
+**2017/12/29**:
+```
+    Version: 1.3.1
+    1. 跨域增加设置 Access-Control-Allow-Headers;
+    2. 返回datetime类型时间转换为UTC时间;
+    3. 引入asyncio;
+```
 
 ### Change Logs:
 **2017/12/29**:

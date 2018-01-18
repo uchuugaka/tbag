@@ -9,11 +9,14 @@ Update: 2017/11/20  1. 删除root_dir配置;
         2017/12/17  1. 修改配置参数传入方式，改为传入配置模块;
                     2. 增加middleware中间件;
         2017/12/17  1. 增加web app初始化;
+        2018/01/18  1. 引入asyncio;
 """
 
 import sys
+import asyncio
 
 import tornado.web
+import tornado.ioloop
 import tornado.httpserver
 from tornado import options
 from tornado.ioloop import IOLoop
@@ -41,11 +44,13 @@ class TornadoContext(object):
                 `name`  日志名
             `HANDLER_PATHES`    uri注册处理器路径
             `HTTP_PORT` HTTP监听端口号
+            `MIDDLEWARES` 中间件配置
             `MYSQL`     mysql配置
             `MONGODB`   mongodb配置
             `ALLOW_CORS`    是否支持跨域，True为支持，False为不支持，默认False
             `COOKIE_SECRET` cookie加密字符串
         """
+        self.loop = None
         self.setting_module = setting_module
 
         self._load_settings()
@@ -55,6 +60,18 @@ class TornadoContext(object):
         self._init_uri_routes()
         self._init_application()
         self._do_heartbeat()
+
+    def start(self):
+        """ 启动
+        """
+        logger.info('start io loop ...')
+        if not self.loop:
+            self._get_event_loop()
+        self.loop.run_forever()
+
+    def _get_event_loop(self):
+        tornado.ioloop.IOLoop.configure('tornado.platform.asyncio.AsyncIOMainLoop')
+        self.loop = asyncio.get_event_loop()
 
     def _load_settings(self):
         """ 加载配置
@@ -158,8 +175,7 @@ class TornadoContext(object):
             'cookie_secret': self.cookie_secret
         }
         app = Application(self.handlers, **settings)
-        http_server = tornado.httpserver.HTTPServer(app)
-        http_server.listen(self.http_port)
+        app.listen(self.http_port)
         logger.info('listen http port at:', self.http_port, caller=self)
 
     def _do_heartbeat(self):
