@@ -53,6 +53,7 @@ class TornadoContext(object):
         self.loop = None
         self.setting_module = setting_module
 
+        self._get_event_loop()
         self._load_settings()
         self._init_logger()
         self._init_middlewares()
@@ -65,13 +66,13 @@ class TornadoContext(object):
         """ 启动
         """
         logger.info('start io loop ...')
-        if not self.loop:
-            self._get_event_loop()
         self.loop.run_forever()
 
     def _get_event_loop(self):
-        tornado.ioloop.IOLoop.configure('tornado.platform.asyncio.AsyncIOMainLoop')
-        self.loop = asyncio.get_event_loop()
+        if not self.loop:
+            tornado.ioloop.IOLoop.configure('tornado.platform.asyncio.AsyncIOMainLoop')
+            self.loop = asyncio.get_event_loop()
+        return self.loop
 
     def _load_settings(self):
         """ 加载配置
