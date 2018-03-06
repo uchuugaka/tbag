@@ -21,5 +21,6 @@ setup(
         'motor==1.1',
         'tornado==4.5.2',
         'Tornado-MySQL==0.5.1',
+        'aioredis==1.1.0',
     ],
 )
