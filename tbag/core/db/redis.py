@@ -29,12 +29,16 @@ async def initRedisPool(host='redis://127.0.0.1:6379', db=None):
     logger.info('create redis pool success.')
 
 
-async def initRedisPublish(host='redis://127.0.0.1:6379', channel='test', db=None):
-    """ 初始化redis事件发布连接
+class RedisDBBase:
+    """ redis db基类
     """
-    global REDIS_PUB_CONN
-    REDIS_PUB_CONN = await aioredis.create_redis(host, db=db)
-    logger.info('create redis publish channel success. channel:', channel)
+
+    async def exec_cmd(self, *args, **kwargs):
+        """ 执行命令
+        """
+        result = await REDIS_CONN_POOL.execute(*args, **kwargs)
+        logger.debug('cmd:', *args, 'result:', result, caller=self)
+        return result
 
 
 #import asyncio
