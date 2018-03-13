@@ -14,7 +14,7 @@ setup(
     description='A Tornado tools bag.',
     url='https://github.com/Demon-Hunter/tbag',
     author='huangtao',
-    author_email='huangtao@klicen.com',
+    author_email='huangtao@ifclover.com',
     license='MIT',
     keywords=['Tornado', 'tools'],
     install_requires=[
