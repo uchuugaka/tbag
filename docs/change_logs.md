@@ -1,5 +1,10 @@
 ### Change Logs:
 
+**2018/03/07**:
+```
+    Version: 1.3.3
+    1. 修改heartbeat模块名;(tbag/core/heart_beat.py -> tbag/core/heartbeat.py)
+```
 
 **2018/03/07**:
 ```

@@ -6,6 +6,7 @@
 Author: huangtao
 Date:   2017/05/08
 Update: 2017/12/12  1、修改心跳日志打印为每5秒一次;
+Update: 2018/03/14  1. 修改模块名;
 """
 
 import datetime
@@ -13,6 +14,9 @@ import datetime
 from tornado.ioloop import IOLoop
 
 from tbag.utils import log as logger
+
+
+__all__ = ['heartbeat']
 
 
 class HeartBeat(object):
@@ -52,5 +56,4 @@ class HeartBeat(object):
         self.tasks.append(t)
 
 
-heart_beat = HeartBeat()
-__all__ = [heart_beat]
+heartbeat = HeartBeat()

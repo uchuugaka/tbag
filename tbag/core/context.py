@@ -11,6 +11,7 @@ Update: 2017/11/20  1. 删除root_dir配置;
         2017/12/17  1. 增加web app初始化;
         2018/01/18  1. 引入asyncio;
         2018/03/06  1. 初始化redis;
+        2018/03/14  1. 修改heartbeat模块名;
 """
 
 import sys
@@ -191,5 +192,5 @@ class TornadoContext(object):
     def _do_heartbeat(self):
         """ 服务器心跳
         """
-        from tbag.core.heart_beat import heart_beat
-        IOLoop.current().call_later(1, heart_beat.start)
+        from tbag.core.heartbeat import heartbeat
+        IOLoop.current().call_later(1, heartbeat.start)
