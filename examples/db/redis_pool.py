@@ -36,6 +36,7 @@ def main():
     # 初始化context
     t_context = TornadoContext(config_module)
 
+    # 注册测试函数
     IOLoop.current().add_timeout(datetime.timedelta(seconds=2), test_redis_pool)
 
     # 启动io loop
