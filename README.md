@@ -9,6 +9,7 @@ validator、工具类等功能。
 - [Quick Start](#quick-start)
 - [HTTP Handler Route](examples/router)
 - [Logs](examples/log)
+- [Middleware](examples/middleware)
 - [Change Logs](#change-logs)
 
 
