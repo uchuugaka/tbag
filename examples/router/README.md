@@ -1,5 +1,4 @@
 #### HTTP Handler Route
-> [example code](./)
 
 * 配置文件中增加 `HANDLER_PATHES`
     ```text
