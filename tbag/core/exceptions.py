@@ -4,7 +4,8 @@
 错误类型定义
 Author: huangtao
 Date:   2017/12/7
-Update: 2017/12/22  1.  修复bug: 继承类默认msg和code失效；
+Update: 2017/12/22  1. 修复bug: 继承类默认msg和code失效；
+        2018/03/14  1. 修改异常类型；
 """
 
 
@@ -28,49 +29,35 @@ class CustomException(Exception):
 class ValidationError(CustomException):
     """ 字段校验错误
     """
-    default_msg = 'Invalid input.'
+    default_msg = 'Bad Request'
     default_code = 400
-
-
-class AuthenticationFailed(CustomException):
-    """ 权限校验失败
-    """
-    default_msg = 'Incorrect authentication credentials.'
-    default_code = 401
 
 
 class NotAuthenticated(CustomException):
     """ 未授权
     """
-    default_msg = 'Authentication credentials were not provided.'
+    default_msg = 'Unauthorized'
     default_code = 401
 
 
-class PermissionDenied(CustomException):
-    """ 权限不够
+class AuthenticationFailed(CustomException):
+    """ 权限校验失败
     """
-    default_msg = 'You do not have permission to perform this action.'
+    default_msg = 'Forbidden'
     default_code = 403
 
 
 class NotFound(CustomException):
     """ 未找到
     """
-    default_msg = 'Not found.'
+    default_msg = 'Not found'
     default_code = 404
 
 
-class ArgumentNoneException(CustomException):
-    """ 字段丢失
+class SystemError(CustomException):
+    """ 系统内部错误
     """
-    default_msg = 'Argument can not be None'
-    default_code = 500
-
-
-class InvalidOperationException(CustomException):
-    """ 非法操作
-    """
-    default_msg = 'Operation is invalid'
+    default_msg = 'Internal Server Error'
     default_code = 500
 
 
@@ -78,4 +65,4 @@ class TimeoutException(CustomException):
     """ 超时
     """
     default_msg = 'Timeout'
-    default_code = 502
+    default_code = 504
