@@ -8,6 +8,7 @@ validator、工具类等功能。
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [HTTP Handler Route](examples/router)
+- [Logs](examples/log)
 - [Change Logs](#change-logs)
 
 
