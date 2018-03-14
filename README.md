@@ -7,7 +7,7 @@ validator、工具类等功能。
 ## Contents
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [HTTP Handler Route](examples/router/README.md)
+- [HTTP Handler Route](examples/router)
 - [Change Logs](#change-logs)
 
 
