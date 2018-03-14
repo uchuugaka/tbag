@@ -10,6 +10,7 @@ validator、工具类等功能。
 - [HTTP Handler Route](examples/router)
 - [Logs](examples/log)
 - [Middleware](examples/middleware)
+- [Heartbeat & Tasks](examples/heartbeat)
 - [Change Logs](#change-logs)
 
 
