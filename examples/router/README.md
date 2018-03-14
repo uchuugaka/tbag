@@ -4,9 +4,8 @@
     ```text
     HANDLER_PATHES = ['api']
     ```
-    > 配置文件中指定 `HANDLER_PATHES` 为 `['api']`，是一个列表，列表里放的是被 `@route` 装饰的 `RequestHandler` 模块；
-    
-    > 其中 `HANDLER_PATHES` 列表可指定任意多个模块；
+    > 配置文件中指定 `HANDLER_PATHES` 为 `['api']`，是一个列表，列表里放的是被 `@route` 装饰的 `RequestHandler` 模块；  
+      其中 `HANDLER_PATHES` 列表可指定任意多个模块；
     
 
 * 创建模块文件 `api.py`
