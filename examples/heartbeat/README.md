@@ -29,18 +29,16 @@
 	
 	def main():
 	    config_module = 'config'
-	    t_context = TornadoContext(config_module)
 	
 	    # 注册定时间隔任务
 	    from tbag.core.heartbeat import heartbeat
 	    import tasks
 	    heartbeat.register(tasks.do_something, "today", "happy")
 	
-	    t_context.start()
+	    TornadoContext(config_module).start()
 	
 	
 	if __name__ == '__main__':
 	    main()
 	```
-	> 注册任务函数，需要在服务初始化之后，并且在服务启动之前。
-	> 所以此处先初始化了 `t_context` 实例，在注册完任务后，并使用 `t_context` 启动事件循环。
+	> 注册任务函数，需要在服务启动之前。
