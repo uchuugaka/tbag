@@ -1,5 +1,5 @@
 #### HTTP Handler Route
-> [example code](examples/router)
+> [example code](./)
 
 * 配置文件中增加 `HANDLER_PATHES`
     ```text
@@ -45,7 +45,7 @@
             result = {'ok': 1}
             self.do_success(result)
     ```
-    > `@route` 装饰器在 [routers.py](tbag/utils/routes.py)
+    > `@route` 装饰器在 [routers.py](../../tbag/utils/routes.py)
 
 * 启动服务
     ```text
