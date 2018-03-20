@@ -16,7 +16,7 @@ from tornado.ioloop import IOLoop
 from tbag.utils import log as logger
 
 
-__all__ = ['heartbeat']
+__all__ = ('heartbeat', )
 
 
 class HeartBeat(object):
