@@ -1,27 +1,42 @@
 # -*- coding:utf-8 -*-
 
+"""
+validator 字段校验
+Author: huangtao
+Date:   2018/03/21
+Update: None
+"""
+
 from tbag.utils import datetime_help
-from tbag.core.exceptions import ValidationError
+from tbag.core import exceptions
 
 
 def _field(data, field=None, required=True):
-    data = {} if data is None else data
-    field_data = data.get(field) if field else data
-
-    if required and field_data is None:
-        raise ValidationError('%s必填' % field)
-    if data is None:
-        return None
-    return field_data
+    if field:
+        data = data or {}
+        if not isinstance(data, dict):
+            raise exceptions.SystemError()
+        if required and field not in data:
+            raise exceptions.ValidationError('{field}必填'.format(field=field))
+        return data.get(field)
+    else:
+        return data
 
 
 def bool_field(data, field=None, required=True):
+    """ bool类型检查
+    @param data 如果field为None，那么field从data里取值，否则判断data是否为bool类型
+    @param field 如果不为None，那么需要从data里提取值
+    @param required 是否data里必须存在field字段
+    """
     field_data = _field(data, field, required)
     if str(field_data).lower() == 'true':
         return True
     if str(field_data).lower() == 'false':
         return False
-    raise ValidationError('%s是bool类型' % field)
+    if not required:
+        return None
+    raise exceptions.ValidationError('{field}是bool类型'.format(field=field))
 
 
 def int_field(data, field=None, required=True):
@@ -29,7 +44,7 @@ def int_field(data, field=None, required=True):
     try:
         return int(field_data) if field_data is not None else None
     except:
-        raise ValidationError('%s是整数' % field)
+        raise exceptions.ValidationError('%s是整数' % field)
 
 
 def float_field(data, field=None, required=True):
@@ -37,7 +52,7 @@ def float_field(data, field=None, required=True):
     try:
         return float(field_data) if field_data is not None else None
     except:
-        raise ValidationError('%s是浮点数' % field)
+        raise exceptions.ValidationError('%s是浮点数' % field)
 
 
 def char_field(data, field=None, required=True):
@@ -50,7 +65,7 @@ def datetime_field(data, field=None, required=True):
     try:
         return datetime_help.parse_datetime(field_data) if field_data is not None else None
     except:
-        raise ValidationError('%s是ISO_8601格式的时间字符串' % field)
+        raise exceptions.ValidationError('%s是ISO_8601格式的时间字符串' % field)
 
 
 def date_field(data, field=None, required=True):
@@ -58,7 +73,7 @@ def date_field(data, field=None, required=True):
     try:
         return datetime_help.parse_date(field_data) if field_data is not None else None
     except:
-        raise ValidationError('%s是ISO_8601格式的日期字符串' % field)
+        raise exceptions.ValidationError('%s是ISO_8601格式的日期字符串' % field)
 
 
 def list_field(data, field=None, required=True):
@@ -66,7 +81,7 @@ def list_field(data, field=None, required=True):
     if field_data is None:
         return None
     if not isinstance(field_data, list):
-        raise ValidationError('%s是列表' % field)
+        raise exceptions.ValidationError('%s是列表' % field)
     return field_data
 
 
@@ -75,8 +90,5 @@ def dict_field(data, field=None, required=True):
     if field_data is None:
         return None
     if not isinstance(field_data, dict):
-        raise ValidationError('%s是字典' % field)
+        raise exceptions.ValidationError('%s是字典' % field)
     return field_data
-
-
-__all__ = [int_field, char_field, float_field, date_field, datetime_field, list_field, dict_field, bool_field]
