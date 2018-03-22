@@ -124,6 +124,28 @@ class TestValidators(unittest.TestCase):
         # check type
         self.assertIsInstance(validators.string_field({'a': "111.11"}, 'a'), str)
 
+    def test_list_field(self):
+        # check list
+        self.assertEqual(validators.list_field([1, 2, 3]), [1, 2, 3])
+        self.assertEqual(validators.list_field(['a', 'b', 'c']), ['a', 'b', 'c'])
+        self.assertEqual(validators.list_field(('a', 'b', 2)), ['a', 'b', 2])
+        self.assertEqual(validators.list_field({'key': ('a', 'b', 2)}, 'key'), ['a', 'b', 2])
+
+        # check not required
+        data = {'a': True}
+        self.assertEqual(validators.list_field(data, 'b', False), None)
+
+        # check raise error
+        with self.assertRaises(exceptions.ValidationError):
+            self.assertEqual(validators.list_field(None), True)
+            self.assertEqual(validators.list_field("a"), True)
+            self.assertEqual(validators.list_field(None, 'a'), True)
+        with self.assertRaises(exceptions.SystemError):
+            self.assertEqual(validators.list_field("bc", 'a'), True)
+
+        # check type
+        self.assertIsInstance(validators.list_field([1, 2, 3]), list)
+
 
 if __name__ == '__main__':
     unittest.main()

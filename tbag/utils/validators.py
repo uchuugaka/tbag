@@ -98,12 +98,17 @@ def date_field(data, field=None, required=True):
 
 
 def list_field(data, field=None, required=True):
+    """ str类型检查
+    @param data 如果field不为None，那么field从data里取值，否则判断data是否为list类型
+    @param field 如果不为None，那么需要从data里提取值
+    @param required 是否data里必须存在field字段，如果字段不存在且required为False，返回None
+    """
     field_data = _field(data, field, required)
-    if field_data is None:
+    if not field_data and not required:
         return None
-    if not isinstance(field_data, list):
-        raise exceptions.ValidationError('%s是列表' % field)
-    return field_data
+    if not isinstance(field_data, (list, set, tuple)):
+        raise exceptions.ValidationError('{field}是列表'.format(field=field))
+    return list(field_data)
 
 
 def dict_field(data, field=None, required=True):
