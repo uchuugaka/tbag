@@ -127,6 +127,7 @@ class TestValidators(unittest.TestCase):
     def test_list_field(self):
         # check list
         self.assertEqual(validators.list_field([1, 2, 3]), [1, 2, 3])
+        self.assertEqual(validators.list_field('[1,2,3]'), [1, 2, 3])
         self.assertEqual(validators.list_field(['a', 'b', 'c']), ['a', 'b', 'c'])
         self.assertEqual(validators.list_field(('a', 'b', 2)), ['a', 'b', 2])
         self.assertEqual(validators.list_field({'key': ('a', 'b', 2)}, 'key'), ['a', 'b', 2])
@@ -149,6 +150,7 @@ class TestValidators(unittest.TestCase):
     def test_dict_field(self):
         # check dict
         self.assertDictEqual(validators.dict_field({'a': 1, 'b': 2}), {'a': 1, 'b': 2})
+        self.assertDictEqual(validators.dict_field('{"a":1,"b":2}'), {'a': 1, 'b': 2})
         self.assertDictEqual(validators.dict_field({'key': {'a': 1, 'b': 2}}, 'key'), {'a': 1, 'b': 2})
 
         # check not required

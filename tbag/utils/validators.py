@@ -92,6 +92,11 @@ def list_field(data, field=None, required=True):
     field_data = _field(data, field, required)
     if not field_data and not required:
         return None
+    if isinstance(field_data, str):
+        try:
+            field_data = json.loads(field_data)
+        except:
+            raise exceptions.ValidationError('{field}是list类型'.format(field=field))
     if not isinstance(field_data, (list, set, tuple)):
         raise exceptions.ValidationError('{field}是list类型'.format(field=field))
     return list(field_data)
