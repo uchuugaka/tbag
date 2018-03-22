@@ -41,13 +41,16 @@ class TestValidators(unittest.TestCase):
         with self.assertRaises(exceptions.SystemError):
             self.assertEqual(validators.bool_field("bc", 'a'), True)
 
+        # check type
+        self.assertIsInstance(validators.bool_field("True"), bool)
+
     def test_int_field(self):
         # check int
-        fields = [111, "111", 111.11, "111"]
+        fields = [111, "111", 111.11]
         for field in fields:
             with self.subTest(field):
                 self.assertEqual(validators.int_field(field), 111)
-        datas = [{'a': 111}, {'a': "111"}, {'a': 111.11}, {'a': "111"}]
+        datas = [{'a': 111}, {'a': "111"}, {'a': 111.11}]
         for data in datas:
             with self.subTest(data):
                 self.assertEqual(validators.int_field(data, 'a'), 111)
@@ -63,6 +66,39 @@ class TestValidators(unittest.TestCase):
             self.assertEqual(validators.int_field(None, 'a'), 1)
         with self.assertRaises(exceptions.SystemError):
             self.assertEqual(validators.int_field("bc", 'a'), 1)
+
+        # check type
+        self.assertIsInstance(validators.int_field({'a': "111"}, 'a'), int)
+
+    def test_float_field(self):
+        # check float
+        fields = [111.11, "111.11"]
+        for field in fields:
+            with self.subTest(field):
+                self.assertEqual(validators.float_field(field), 111.11)
+        datas = [{'a': 111.11}, {'a': "111.11"}]
+        for data in datas:
+            with self.subTest(data):
+                self.assertEqual(validators.float_field(data, 'a'), 111.11)
+        fields = [111, "111"]
+        for field in fields:
+            with self.subTest(field):
+                self.assertEqual(validators.float_field(field), 111.0)
+
+        # check not required
+        data = {'a': True}
+        self.assertEqual(validators.float_field(data, 'b', False), None)
+
+        # check raise error
+        with self.assertRaises(exceptions.ValidationError):
+            self.assertEqual(validators.float_field(None), 11)
+            self.assertEqual(validators.float_field("a"), 1)
+            self.assertEqual(validators.float_field(None, 'a'), 1)
+        with self.assertRaises(exceptions.SystemError):
+            self.assertEqual(validators.float_field("bc", 'a'), 1)
+
+        # check type
+        self.assertIsInstance(validators.float_field({'a': "111.11"}, 'a'), float)
 
 
 if __name__ == '__main__':
