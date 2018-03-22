@@ -5,6 +5,8 @@
     Version: 1.3.3
     1. 修改heartbeat模块名;(tbag/core/heart_beat.py -> tbag/core/heartbeat.py)
     2. 修改异常类型；
+    3. 优化validator；
+    4. tbag/core/web.py修改__query_params为_query_params，__data为_data;
 ```
 
 **2018/03/07**:

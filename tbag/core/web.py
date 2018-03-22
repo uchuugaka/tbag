@@ -11,6 +11,7 @@ Update: 2017/12/12  1. 增加do_prepare/do_complete函数;
                     3. 删除 do_http_error 方法;
         2018/01/17  1. 跨域增加设置 Access-Control-Allow-Headers;
         2018/01/18  1. 返回datetime类型时间转换为UTC时间;
+        2018/03/22  1. 修改__query_params为_query_params，__data为_data;
 """
 
 import json
@@ -29,23 +30,23 @@ class WebHandler(RequestHandler):
 
     @property
     def query_params(self):
-        if not hasattr(self, '__query_params'):
-            self.__query_params = {}
-            for key, value in self.request.arguments.items():
-                value = [i.decode('utf-8') for i in value]
-                self.__query_params[key] = value if len(value) > 1 else value[0]
-        return self.__query_params
+        if not hasattr(self, '_query_params'):
+            self._query_params = {}
+            for key in self.request.arguments.keys():
+                value = self.get_argument(key)
+                self._query_params[key] = value
+        return self._query_params
 
     @property
     def data(self):
-        if not hasattr(self, '__data'):
-            self.__data = None
+        if not hasattr(self, '_data'):
+            self._data = None
             if self.request.body:
                 try:
-                    self.__data = json.loads(self.request.body.decode('utf-8'))
-                except Exception:
+                    self._data = json.loads(self.request.body.decode('utf-8'))
+                except:
                     raise exceptions.ValidationError('请求的body是非json格式')
-        return self.__data
+        return self._data
 
     def _to_representation(self, instance):
         """ 针对datetime类型数据做序列化
