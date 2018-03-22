@@ -146,6 +146,25 @@ class TestValidators(unittest.TestCase):
         # check type
         self.assertIsInstance(validators.list_field([1, 2, 3]), list)
 
+    def test_dict_field(self):
+        # check dict
+        self.assertDictEqual(validators.dict_field({'a': 1, 'b': 2}), {'a': 1, 'b': 2})
+        self.assertDictEqual(validators.dict_field({'key': {'a': 1, 'b': 2}}, 'key'), {'a': 1, 'b': 2})
+
+        # check not required
+        self.assertEqual(validators.dict_field({'a': 1}, 'key', False), None)
+
+        # check raise error
+        with self.assertRaises(exceptions.ValidationError):
+            self.assertEqual(validators.dict_field(None), True)
+            self.assertEqual(validators.dict_field("a"), 'key')
+            self.assertEqual(validators.dict_field(None, 'key'), True)
+        with self.assertRaises(exceptions.SystemError):
+            self.assertEqual(validators.dict_field("bc", 'key'), True)
+
+        # check type
+        self.assertIsInstance(validators.dict_field({'a': 1, 'b': 2}), dict)
+
 
 if __name__ == '__main__':
     unittest.main()
