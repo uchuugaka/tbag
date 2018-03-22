@@ -100,6 +100,30 @@ class TestValidators(unittest.TestCase):
         # check type
         self.assertIsInstance(validators.float_field({'a': "111.11"}, 'a'), float)
 
+    def test_string_field(self):
+        # check str
+        fields = [111.11, "111.11"]
+        for field in fields:
+            with self.subTest(field):
+                self.assertEqual(validators.string_field(field), "111.11")
+        datas = [{'a': 111.11}, {'a': "111.11"}]
+        for data in datas:
+            with self.subTest(data):
+                self.assertEqual(validators.string_field(data, 'a'), "111.11")
+
+        # check not required
+        data = {'a': True}
+        self.assertEqual(validators.string_field(data, 'b', False), None)
+
+        # check raise error
+        with self.assertRaises(exceptions.ValidationError):
+            self.assertEqual(validators.string_field(None, 'a'), 1)
+        with self.assertRaises(exceptions.SystemError):
+            self.assertEqual(validators.string_field("bc", 'a'), 1)
+
+        # check type
+        self.assertIsInstance(validators.string_field({'a': "111.11"}, 'a'), str)
+
 
 if __name__ == '__main__':
     unittest.main()
