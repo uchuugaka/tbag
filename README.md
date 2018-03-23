@@ -11,6 +11,7 @@ validator、工具类等功能。
 - [Logs](examples/log)
 - [Middleware](examples/middleware)
 - [Heartbeat & Tasks](examples/heartbeat)
+- [Validators](examples/validator)
 - [Change Logs](#change-logs)
 
 
