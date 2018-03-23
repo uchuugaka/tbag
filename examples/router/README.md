@@ -20,30 +20,31 @@
     @route('/api/test', 'api.test')
     class TestHandler(WebHandler):
     
-        async def get(self, *args, **kwargs):
-            logger.info('test handler GET:', self.request.path, caller=self)
-            result = {'ok': 1}
-            self.do_success(result)
-    
-        async def post(self, *args, **kwargs):
-            body = self.get_body()
-            logger.info('test handler POST:', self.request.path, 'body:',  body, caller=self)
-            result = {'ok': 1}
-            self.do_success(result)
-    
-        async def put(self, *args, **kwargs):
-            body = self.get_body()
-            logger.info('test handler PUT:', self.request.path, 'body:',  body, caller=self)
-            result = {'ok': 1}
-            self.do_success(result)
-    
-        async def patch(self, *args, **kwargs):
-            body = self.get_body()
-            logger.info('test handler PATCH:', self.request.path, 'body:',  body, caller=self)
-            result = {'ok': 1}
-            self.do_success(result)
+	    async def _get_(self, *args, **kwargs):
+	        logger.info('test handler GET:', self.request.path, caller=self)
+	        result = {'ok': 1}
+	        self.do_success(result)
+	
+	    async def _post_(self, *args, **kwargs):
+	        body = self.get_body()
+	        logger.info('test handler POST:', self.request.path, 'body:',  body, caller=self)
+	        result = {'ok': 1}
+	        self.do_success(result)
+	
+	    async def _put_(self, *args, **kwargs):
+	        body = self.get_body()
+	        logger.info('test handler PUT:', self.request.path, 'body:',  body, caller=self)
+	        result = {'ok': 1}
+	        self.do_success(result)
+	
+	    async def _patch_(self, *args, **kwargs):
+	        body = self.get_body()
+	        logger.info('test handler PATCH:', self.request.path, 'body:',  body, caller=self)
+	        result = {'ok': 1}
+	        self.do_success(result)
     ```
-    > `@route` 装饰器在 [routers.py](../../tbag/utils/routes.py)
+    > `@route` 装饰器在 [routers.py](../../tbag/utils/routes.py)  
+      特别注意，在HTTP的方法名左右需要加一个下划线（eg. \_get_/\_post_），tornado默认的HTTP方法名(eg. get/post)将不会使用异常处理及中间件；
 
 * 启动服务
     ```text
