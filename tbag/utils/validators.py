@@ -4,7 +4,7 @@
 validator 字段校验
 Author: huangtao
 Date:   2018/03/21
-Update: None
+Update: 2018/06/21  1. 修复bug: 在field为None，并且检查失败时，异常信息格式化{field}为None了;
 """
 
 import json
@@ -38,7 +38,7 @@ def bool_field(data, field=None, required=True):
         return False
     if not required:
         return None
-    raise exceptions.ValidationError('{field}是bool类型'.format(field=field))
+    raise exceptions.ValidationError('{field}是bool类型'.format(field=field or data))
 
 
 def int_field(data, field=None, required=True):
@@ -53,7 +53,7 @@ def int_field(data, field=None, required=True):
     try:
         return int(field_data)
     except:
-        raise exceptions.ValidationError('{field}是int类型'.format(field=field))
+        raise exceptions.ValidationError('{field}是int类型'.format(field=field or data))
 
 
 def float_field(data, field=None, required=True):
@@ -68,7 +68,7 @@ def float_field(data, field=None, required=True):
     try:
         return float(field_data)
     except:
-        raise exceptions.ValidationError('{field}是float类型'.format(field=field))
+        raise exceptions.ValidationError('{field}是float类型'.format(field=field or data))
 
 
 def string_field(data, field=None, required=True):
@@ -96,9 +96,9 @@ def list_field(data, field=None, required=True):
         try:
             field_data = json.loads(field_data)
         except:
-            raise exceptions.ValidationError('{field}是list类型'.format(field=field))
+            raise exceptions.ValidationError('{field}是list类型'.format(field=field or data))
     if not isinstance(field_data, (list, set, tuple)):
-        raise exceptions.ValidationError('{field}是list类型'.format(field=field))
+        raise exceptions.ValidationError('{field}是list类型'.format(field=field or data))
     return list(field_data)
 
 
@@ -115,9 +115,9 @@ def dict_field(data, field=None, required=True):
         try:
             field_data = json.loads(field_data)
         except:
-            raise exceptions.ValidationError('{field}是dict类型'.format(field=field))
+            raise exceptions.ValidationError('{field}是dict类型'.format(field=field or data))
     if not isinstance(field_data, dict):
-        raise exceptions.ValidationError('{field}是dict类型'.format(field=field))
+        raise exceptions.ValidationError('{field}是dict类型'.format(field=field or data))
     return field_data
 
 
@@ -126,7 +126,7 @@ def datetime_field(data, field=None, required=True):
     try:
         return datetime_help.parse_datetime(field_data) if field_data is not None else None
     except:
-        raise exceptions.ValidationError('%s是ISO_8601格式的时间字符串' % field)
+        raise exceptions.ValidationError('{field}是ISO_8601格式的时间字符串'.format(field=field or data))
 
 
 def date_field(data, field=None, required=True):
@@ -134,4 +134,4 @@ def date_field(data, field=None, required=True):
     try:
         return datetime_help.parse_date(field_data) if field_data is not None else None
     except:
-        raise exceptions.ValidationError('%s是ISO_8601格式的日期字符串' % field)
+        raise exceptions.ValidationError('{field}是ISO_8601格式的日期字符串'.format(field=field or data))
