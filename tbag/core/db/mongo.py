@@ -113,7 +113,7 @@ class MongoDBBase(object):
             doc['create_time'] = create_time
             doc['modify_time'] = create_time
             ret_ids.append(str(doc['_id']))
-        self.dao.insert_many(docs)
+        await self.dao.insert_many(docs)
         if is_one:
             return ret_ids[0]
         else:
