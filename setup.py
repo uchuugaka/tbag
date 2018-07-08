@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
     name='tbag',
-    version='1.3.6',
+    version='1.3.7',
     packages=['tbag',
               'tbag.core',
               'tbag.core.db',
@@ -18,9 +18,9 @@ setup(
     license='MIT',
     keywords=['Tornado', 'tools'],
     install_requires=[
-        'motor==1.1',
+        # 'motor==1.1',
         'tornado==4.5.2',
-        'Tornado-MySQL==0.5.1',
-        'aioredis==1.1.0',
+        # 'Tornado-MySQL==0.5.1',
+        # 'aioredis==1.1.0',
     ],
 )
